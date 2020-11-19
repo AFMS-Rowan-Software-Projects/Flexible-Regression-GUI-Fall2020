@@ -2,7 +2,7 @@
 // IDE: NetBeans IDE 8.2 RC
 // I've added heavy comments for people that have trouble with this project
 
-package gui; // change this to your package's name
+package flexible_regression_gui; // change this to your package's name
 import java.io.*;
 
 /*  Call "createXML" to read directory

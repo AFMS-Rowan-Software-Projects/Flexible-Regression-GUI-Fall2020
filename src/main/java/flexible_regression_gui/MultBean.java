@@ -1,4 +1,4 @@
-package gui;
+package flexible_regression_gui;
 
 import java.util.concurrent.Callable;
 
