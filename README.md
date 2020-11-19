@@ -13,4 +13,4 @@ Design Team Member: Ryan Bothmann
 
 Design Team Member: Emily Griscom
 
-Design Team Member: Scott Straguzzi
+Design Team Member: Scott Straguzzi :)
