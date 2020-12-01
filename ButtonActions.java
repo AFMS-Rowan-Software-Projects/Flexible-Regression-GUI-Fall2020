@@ -1,8 +1,7 @@
 // Emily Griscom
 // IDE: NetBeans IDE 8.2 RC
-// I've added heavy comments for people that have trouble with this project
 
-package gui; // change this to your package's name
+package gui;
 import java.io.*;
 
 /*  Call "createXML" to read directory
@@ -49,15 +48,7 @@ public class ButtonActions {
         }
     }
     
-    /*  True iff String str is rather empty or
-    only contains whitespace.   */
-    public static boolean isBlank(String str) {
-    	if(str.trim().isEmpty())
-    		return true;
-    	return false;
-    }
-    
-    
+
     /*  Return the folder's name of the argument as a string.
         Ex: C:\Users\YourName\FolderYouWantToUse\YourXML.xml
         returns C:\Users\YourName\FolderYouWantToUse */
@@ -70,17 +61,33 @@ public class ButtonActions {
     }
     
     
-    /*  Argument is a directory in string form.
+    /*  True iff String str is rather empty or
+        only contains whitespace.   */
+    public static boolean isBlank(String str) {
+    	if(str.trim().isEmpty())
+    		return true;
+    	return false;
+    }
+    
+    
+    /*  Argument is a directory or filename in string form.
         Return false if it is not a .xml file. */
-    static boolean isXML(String dirStr) {
-        // get file name and its extension
+    static boolean isXML(String str) {
+        // get file name's or directory's extension
         // Ex: C:\Users\YourName\FolderYouWantToUse\YourXML.xml
-        // becomes YourXML.xml and .xml
-        String fileName = dirStr.substring(dirStr.lastIndexOf("\\") + 1);
-        int periodIndex = fileName.lastIndexOf(".");
+        // becomes .xml
+        int periodIndex = str.lastIndexOf(".");
         if(periodIndex == -1) // was there even a period?
             return false;
-        String fileExtension = fileName.substring(periodIndex);
+        String fileExtension = str.substring(periodIndex);
         return fileExtension.equals(".xml"); // is the file extension ".xml?"
+    }
+    
+    
+    /*  Argument is a file's directory in string form.
+        Returns true iff this file directory exists. */
+    public static boolean exists(String dirStr) {
+        File dirFile = new File(dirStr);
+        return dirFile.exists();
     }
 }
