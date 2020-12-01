@@ -1,4 +1,4 @@
-package gui;
+
 
 public class AssertEquals {
 	int result = 0; // Defaults to 0 before being instantiated 

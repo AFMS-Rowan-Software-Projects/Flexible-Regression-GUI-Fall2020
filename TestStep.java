@@ -1,4 +1,4 @@
-package com.Tester;
+
 
 public abstract class TestStep {
     private String testStep;

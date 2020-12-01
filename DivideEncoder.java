@@ -14,9 +14,15 @@ public class DivideEncoder {
 		div.setNum(5);
 		div.setDenom(50);
 		div.setResult();
-		
+		/*
 		XMLEncoder xmlEncoder = new XMLEncoder(
 				new BufferedOutputStream(new FileOutputStream("dividebean.xml")));
+		xmlEncoder.writeObject(div);
+		xmlEncoder.close();
+		*/
+		FileOutputStream fos = new FileOutputStream("dividebean.xml");
+		BufferedOutputStream bos = new BufferedOutputStream(fos);
+		XMLEncoder xmlEncoder = new XMLEncoder(bos);
 		xmlEncoder.writeObject(div);
 		xmlEncoder.close();
 	}

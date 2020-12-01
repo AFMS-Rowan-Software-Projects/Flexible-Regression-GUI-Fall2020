@@ -1,7 +1,7 @@
 // Emily Griscom
 // IDE: NetBeans IDE 8.2 RC
 
-package gui;
+
 import java.io.*;
 
 /*  Call "createXML" to read directory
