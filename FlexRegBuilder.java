@@ -314,13 +314,11 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
                  int tmp = folder.showOpenDialog(null);																// Invoke to show the save dialog
                  if (tmp == JFileChooser.APPROVE_OPTION) {
                      File filesList[] = folder.getSelectedFile().listFiles();
+                     errorLabel.setVisible(false);
                      for(File file : filesList) { 																	// insert every .xml file to left table
                          String filepath = file.toString();
                          if(ButtonActions.isXML(filepath)) {
-                             System.out.println(filepath);
                              leftModel.insertRow(leftModel.getRowCount(), new Object[] { filepath });
-                        	 errorLabel.setVisible(false);
-                             
                          } else {
                         	 errorLabel.setText("Error: Some files not .xml files");
                         	 errorLabel.setVisible(true);
