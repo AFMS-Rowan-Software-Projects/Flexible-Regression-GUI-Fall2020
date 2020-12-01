@@ -9,6 +9,7 @@ import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.filechooser.*;
@@ -112,10 +113,10 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		JButton addressBtn = new JButton("Address Book");									// Address Book button
 		addressBtn.addActionListener(f1);
 		
-		/*JButton addBtn = new JButton("Add");												// Add button to transfer sides
+		JButton addBtn = new JButton("Add");												// Add button to transfer sides
 		addBtn.setAlignmentY(BOTTOM_ALIGNMENT);
 		addBtn.setAlignmentX(CENTER_ALIGNMENT);
-		addBtn.addActionListener(f1);*/
+		addBtn.addActionListener(f1);
 		
 		JButton removeBtn = new JButton("Remove");											// Remove button to remove from panel
 		removeBtn.setAlignmentY(BOTTOM_ALIGNMENT);
@@ -194,13 +195,13 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		removePanel.setBackground(new Color(44,87,70));
 		removePanel.add(removeBtn);
 		
-		/*JPanel addPanel = new JPanel();														// Panel for add button
+		JPanel addPanel = new JPanel();														// Panel for add button
 		addPanel.setBounds(350, 225, 100, 30);
 		addPanel.setLayout(new BorderLayout());
 		addPanel.setAlignmentY(CENTER_ALIGNMENT);
 		addPanel.setAlignmentX(CENTER_ALIGNMENT);
 		addPanel.setBackground(new Color(44,87,70));
-		addPanel.add(addBtn);*/
+		addPanel.add(addBtn);
 		
 		JPanel testPanelText = new JPanel();												// Panel for test header
 		testPanelText.setBounds(450, 60, 325, 100);
@@ -272,7 +273,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		frame.add(errorPanel);
 		frame.add(editPanel);
 		frame.add(removePanel);
-		//frame.add(addPanel);
+		frame.add(addPanel);
 		frame.add(filePanel);															    // Add panels to the frame
 		frame.add(filePanelText);
 		frame.add(testPanel);
@@ -330,9 +331,28 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
              
              // otherwise, user picked "Nevermind," do nothing	
 			
+		} else if(com.contentEquals("Add")) {													// Add to test sequence, opens up steps
+			JTextComponent text = null;		// Change null to something else.
+			FileReader inputReader = null;
+			try {
+				inputReader = new FileReader((String) leftTable.getValueAt(leftTable.getSelectedRow(), 0));
+				text.read(inputReader, (String) leftTable.getValueAt(leftTable.getSelectedRow(), 0)); 
+				errorLabel.setVisible(false);
+				
+			} catch(IOException e) {
+				errorLabel.setText("Error: Failed to display steps");
+				errorLabel.setVisible(true);
+			}
+			
+			try {
+				inputReader.close();
+			} catch (IOException e) {
+				errorLabel.setText("Error: Failed to close reader");
+				errorLabel.setVisible(true);
+			}
+			
 		} else if(com.contentEquals("Remove")) {
 			try {
-				//leftModel.insertRow(leftModel.getRowCount(), new Object[] { rightTable.getValueAt(rightTable.getSelectedRow(), 0) } );
 				rightModel.removeRow(rightTable.getSelectedRow());
 				errorLabel.setVisible(false);
 				
@@ -391,35 +411,39 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		} else if(com.contentEquals("Create File")) {
 			// By Emily Griscom
 			// prompt for folder
-            JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int tmp = chooser.showOpenDialog(null);																		// Invoke to show the save dialog
-            if (tmp == JFileChooser.APPROVE_OPTION) {
-                // name of folder that new file will be placed in
-                String folderName = chooser.getSelectedFile().getPath();
-                
-                // prompt for name of .xml file
-                JFrame createFrame = new JFrame("Flexible Regression Builder");
-                String fileName  = JOptionPane.showInputDialog(createFrame,
-                            "Please enter a name for your file."
-                          + " No need to include '.xml' in the name", null);
-                
-                // if user didn't cancel, create new file in folder
-                if(fileName != null) {
-                	if(ButtonActions.isBlank(fileName)) {
-                        errorLabel.setText("Error: Blank filename");
-                        errorLabel.setVisible(true);
-                    } else {    
-                        try {
-                            File newFile = new File(folderName + "//" + fileName + ".xml");
-                            newFile.createNewFile();
-                            errorLabel.setVisible(false);
-                        } catch (IOException ex) {
-                            errorLabel.setText("Error: Invalid characters in filename");
-                            errorLabel.setVisible(true);
-                        }
-                    }
-                }
+			JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int tmp = chooser.showOpenDialog(null);																		// Invoke to show the save dialog
+			if (tmp == JFileChooser.APPROVE_OPTION) {
+				// name of folder that new file will be placed in
+				String folderName = chooser.getSelectedFile().getPath();
+			                
+				// prompt for name of .xml file
+			    JFrame createFrame = new JFrame("Flexible Regression Builder");
+			    String fileName  = JOptionPane.showInputDialog(createFrame,
+			    		"Please enter a name for your file."
+			    	    + " No need to include '.xml' in the name", null);
+			                
+			    // if user didn't cancel, create new file in folder
+			    if(fileName != null) {
+			    	if(ButtonActions.isBlank(fileName)) {
+			    		errorLabel.setText("Error: Blank filename");
+			            errorLabel.setVisible(true);
+			            
+			        } else if(ButtonActions.exists(folderName + "//" + fileName + ".xml")) {   
+			            errorLabel.setText("Error: File already exists");
+			            errorLabel.setVisible(true);
+			        } else { // no errors, create file
+			        	try {
+			        		File newFile = new File(folderName + "//" + fileName + ".xml");
+			                newFile.createNewFile();
+			                errorLabel.setVisible(false);
+			            } catch (IOException ex) {
+			                errorLabel.setText("Error: Invalid characters in filename");
+			                errorLabel.setVisible(true);
+			            }
+			        }
+			    }
             }  
             
 		} else if(com.contentEquals("Move Up")) {
