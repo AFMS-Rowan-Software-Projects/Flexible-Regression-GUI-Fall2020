@@ -30,12 +30,12 @@ public class Divide implements java.io.Serializable {
 		this.denom = denom;
 	}
 	
-	public void setResult() {
-		result = num/denom;
-	}
-	
 	public double getResult() {
 		return result;
+	}
+	
+	public void setResult() {
+		result = num/denom;
 	}
 	
 }
