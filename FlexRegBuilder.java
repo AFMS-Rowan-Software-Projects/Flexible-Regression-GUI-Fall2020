@@ -20,7 +20,7 @@ import javax.swing.text.JTextComponent;
  * Implements a GUI
  * 
  * @author  Ryan Bothmann
- * @version 10/21/2020
+ * @version 12/1/2020
  */
 public class FlexRegBuilder extends JFrame implements ActionListener {
 	  
@@ -328,28 +328,34 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
                      }
                  }
              }
-             
              // otherwise, user picked "Nevermind," do nothing	
 			
 		} else if(com.contentEquals("Add")) {													// Add to test sequence, opens up steps
 			JTextComponent text = null;		// Change null to something else.
 			FileReader inputReader = null;
-			try {
-				inputReader = new FileReader((String) leftTable.getValueAt(leftTable.getSelectedRow(), 0));
-				text.read(inputReader, (String) leftTable.getValueAt(leftTable.getSelectedRow(), 0)); 
-				errorLabel.setVisible(false);
+                        
+                        int index = leftTable.getSelectedRow();
+                        if(index == -1) {
+                                errorLabel.setText("Error: Please select a row");
+                                errorLabel.setVisible(true);
+                        } else {
+                            try {
+                                    inputReader = new FileReader((String) leftTable.getValueAt(index, 0));
+                                    text.read(inputReader, (String) leftTable.getValueAt(index, 0)); 
+                                    errorLabel.setVisible(false);
 				
-			} catch(IOException e) {
-				errorLabel.setText("Error: Failed to display steps");
-				errorLabel.setVisible(true);
-			}
+                            } catch(IOException e) {
+                                    errorLabel.setText("Error: Failed to display steps");
+                                    errorLabel.setVisible(true);
+                            }
 			
-			try {
-				inputReader.close();
-			} catch (IOException e) {
-				errorLabel.setText("Error: Failed to close reader");
-				errorLabel.setVisible(true);
-			}
+                            try {
+                                    inputReader.close();
+                            } catch (IOException e) {
+                                    errorLabel.setText("Error: Failed to close reader");
+                                    errorLabel.setVisible(true);
+                            }
+                        }
 			
 		} else if(com.contentEquals("Remove")) {
 			try {
