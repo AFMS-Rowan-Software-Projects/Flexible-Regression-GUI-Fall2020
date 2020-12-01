@@ -7,7 +7,7 @@ public class Divide implements java.io.Serializable {
 	
 	private double num; //numerator
 	private double denom; //denominator
-	private double result; //quotient
+	public double result = 0; //quotient
 	
 	//no-arg constructor
 	public Divide() {
@@ -35,7 +35,7 @@ public class Divide implements java.io.Serializable {
 	}
 	
 	public void setResult() {
-		result = num/denom;
+		this.result = num/denom;
 	}
 	
 }
