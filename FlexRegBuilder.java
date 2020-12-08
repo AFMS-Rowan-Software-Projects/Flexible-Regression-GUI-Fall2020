@@ -94,11 +94,6 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		deleteBtn.setAlignmentX(CENTER_ALIGNMENT);
 		deleteBtn.addActionListener(f1);
 		
-		JButton editBtn = new JButton("Edit");												// Edit button to edit files on right side
-		editBtn.setAlignmentY(BOTTOM_ALIGNMENT);
-		editBtn.setAlignmentX(CENTER_ALIGNMENT);
-		editBtn.addActionListener(f1);
-		
 		JButton saveBtn = new JButton("Save");												// Save button
 		saveBtn.addActionListener(f1);
 		
@@ -170,17 +165,9 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		errorPanel.setAlignmentY(CENTER_ALIGNMENT);
 		errorPanel.setAlignmentX(CENTER_ALIGNMENT);
 		errorPanel.add(errorLabel);
-		
-		JPanel editPanel = new JPanel();													// Panel for edit button
-		editPanel.setBounds(350, 275, 100, 30);
-		editPanel.setLayout(new BorderLayout());
-		editPanel.setAlignmentY(CENTER_ALIGNMENT);
-		editPanel.setAlignmentX(CENTER_ALIGNMENT);
-		editPanel.setBackground(new Color(44,87,70));
-		editPanel.add(editBtn);
-
+	
 		JPanel deletePanel = new JPanel();													// Panel for delete button
-		deletePanel.setBounds(350, 300, 100, 30);
+		deletePanel.setBounds(350, 275, 100, 30);
 		deletePanel.setLayout(new BorderLayout());
 		deletePanel.setAlignmentY(CENTER_ALIGNMENT);
 		deletePanel.setAlignmentX(CENTER_ALIGNMENT);
@@ -271,7 +258,6 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		frame.add(toolPanel);
 		frame.add(deletePanel);
 		frame.add(errorPanel);
-		frame.add(editPanel);
 		frame.add(removePanel);
 		frame.add(addPanel);
 		frame.add(filePanel);															    // Add panels to the frame
@@ -363,16 +349,6 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 				
 			} catch(ArrayIndexOutOfBoundsException e) {
 				errorLabel.setText("Error: Wrong operation");
-				errorLabel.setVisible(true);
-			}
-			
-		} else if(com.contentEquals("Edit")) {
-			try {
-				PopUp.popUp((String) rightTable.getValueAt(rightTable.getSelectedRow(), 0));
-				errorLabel.setVisible(false);
-				
-			} catch(ArrayIndexOutOfBoundsException | IOException e) {
-				errorLabel.setText("Error: Select a step to edit");
 				errorLabel.setVisible(true);
 			}
 			
