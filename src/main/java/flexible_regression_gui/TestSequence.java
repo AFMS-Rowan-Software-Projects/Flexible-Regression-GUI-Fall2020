@@ -1,4 +1,4 @@
-package test_case_builder;
+package flexible_regression_gui;
 
 import java.util.*; // List and related classes
 

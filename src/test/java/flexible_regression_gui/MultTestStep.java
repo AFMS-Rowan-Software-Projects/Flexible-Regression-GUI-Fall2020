@@ -1,7 +1,10 @@
-package test_case_builder;
+package flexible_regression_gui;
 
 import java.lang.reflect.*;
 import java.util.List;
+
+import flexible_regression_gui.Testable;
+
 import java.util.LinkedList;
 
 /**

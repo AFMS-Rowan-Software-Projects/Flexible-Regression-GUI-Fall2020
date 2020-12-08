@@ -1,4 +1,7 @@
-package test_case_builder;
+package flexible_regression_gui;
+
+import flexible_regression_gui.TestSequence;
+import flexible_regression_gui.Testable;
 
 /**
  * A sample view for this project
