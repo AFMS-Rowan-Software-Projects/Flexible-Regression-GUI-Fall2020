@@ -104,6 +104,9 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		
 		JButton multiBtn = new JButton("Multiplication");									// Multiplication button
 		multiBtn.addActionListener(f1);
+		
+		JButton divideBtn = new JButton("Division");
+		divideBtn.addActionListener(f1);
 
 		JButton addressBtn = new JButton("Address Book");									// Address Book button
 		addressBtn.addActionListener(f1);
@@ -233,6 +236,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		border.setTitleColor(Color.DARK_GRAY);
 		toolPanel.setBorder(border);
 		toolPanel.add(multiBtn);
+		toolPanel.add(divideBtn);
 		toolPanel.add(addressBtn);
 
 		JPanel filePanelText = new JPanel(); 												// Panel for file header
@@ -383,6 +387,9 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			BeanBuilder temp = new BeanBuilder(leftIn, rightIn, expResult);
 			//JOptionPane.showInternalMessageDialog(frame.getContentPane(), temp.toString() + "\n" + temp.assertEqual());
 			// Assert equals is boolean, tells if two are equal.*/
+			
+		} else if(com.contentEquals("Division")) {
+			// Enter code for division
 			
 		} else if(com.contentEquals("Address Book")) {
 				// Waiting on back end so I can connect and display steps
