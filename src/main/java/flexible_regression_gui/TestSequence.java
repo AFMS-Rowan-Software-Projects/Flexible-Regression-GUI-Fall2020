@@ -5,6 +5,7 @@ import java.util.*; // List and related classes
 import java.beans.*; // XML encoder and decoder
 import java.io.*;    // Reads / writers for above
 import java.lang.reflect.*;
+import java.nio.file.*;
 
 
 /**
@@ -25,7 +26,8 @@ import java.lang.reflect.*;
 public class TestSequence {
 	private List<TestStep> testSequence; // A list of TestSteps, to be executed in order
 	private Testable baseCase; // I'd somehow like to make this final, but serialization / deserialization may mess with that. Test that out later.
-	// private Testable testCase; // A clone of baseCase that will be modified when the testSequence is executed.
+	
+	private String fileName; // File path used for serialization / deserialization
 	
 	
 	/**
@@ -34,7 +36,7 @@ public class TestSequence {
 	public TestSequence() {
 		testSequence = null;
 		baseCase = null;
-		// testCase = null;
+		fileName = null;
 	}
 	
 	/**
@@ -46,7 +48,9 @@ public class TestSequence {
 	public TestSequence(Testable testObj) {
 		testSequence = new LinkedList<TestStep>();
 		baseCase = testObj;
-		// testCase = baseCase; // May need to look into a Clone() method or something similar so that changes to testCase are not reflected in base case
+		
+		fileName =  baseCase.getClass().getName() + ".xml"; // SHOULD be the src/main/resources folder in the maven project...
+										 // ALSO need to figure out how to make this work on Linux since that's a windows file path...
 	}
 	
 	/**
@@ -128,6 +132,35 @@ public class TestSequence {
 		return output;
 	}
 	
+	// ENCODING AND DECODING METHODS
+	public void encode() {
+		try {
+			FileOutputStream output = new FileOutputStream(fileName);
+			XMLEncoder encoder = new XMLEncoder(output);
+			encoder.writeObject(this);
+		    encoder.close();
+		} catch (FileNotFoundException e){
+			System.err.println("Error writing to file " + fileName);
+			e.printStackTrace();
+		}
+	}
+	
+	public static TestSequence decode(String fileName) {
+		try {
+			FileInputStream input = new FileInputStream(fileName);
+			XMLDecoder decoder = new XMLDecoder(input);
+			
+			TestSequence readSequence = (TestSequence) decoder.readObject();
+			decoder.close();
+			
+			return readSequence;
+		} catch (FileNotFoundException e){
+			System.err.println("Error writing to file " + fileName);
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	// GETTERS AND SETTERS TO ADHERE TO JAVA BEAN API
 	
 	public void setTestSequence(List<TestStep> testSequence) {
@@ -145,14 +178,12 @@ public class TestSequence {
 	public void setBaseCase(Testable baseCase) {
 		this.baseCase = baseCase;
 	}
-
-//	public Testable getTestCase() {
-//		return testCase;
-//	}
-//
-//	public void setTestCase(Testable testCase) {
-//		this.testCase = testCase;
-//	}
 	
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 	
+	public String getFileName() {
+		return fileName;
+	}
 }

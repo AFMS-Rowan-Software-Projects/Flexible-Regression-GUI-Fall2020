@@ -61,6 +61,17 @@ public class TestSequenceViewer {
 		testObj3 = sequence.execute(); // Even though we already ran execute once, the original step in the test sequence still is stored
 		
 		System.out.println("testObj3 should be valid: " + testObj3 + " " + testObj3.validate());
+		
+		// Testing IO
+		System.out.println("\nTesting writing the TestSequence" + sequence.getFileName() +"...");
+		sequence.encode();
+		System.out.println("Test Sequence encoded");
+		
+		System.out.println("Trying to read the file back...");
+		TestSequence readSequence = TestSequence.decode(sequence.getFileName()); 
+		
+		System.out.println("Testing the read object...");
+		System.out.println("readSequence should contain a valid MultTestStep: " + readSequence.execute() + " " + readSequence.execute().validate());
 	}
 
 }
