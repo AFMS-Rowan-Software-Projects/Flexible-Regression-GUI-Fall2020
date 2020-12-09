@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<java version="14.0.1" class="java.beans.XMLDecoder">
+ <object class="flexible_regression_gui.TestSequence">
+  <void property="baseCase">
+   <object class="flexible_regression_gui.MultTestStep" id="MultTestStep0">
+    <void property="left">
+     <int>3</int>
+    </void>
+    <void property="result">
+     <int>12</int>
+    </void>
+    <void property="right">
+     <int>4</int>
+    </void>
+   </object>
+  </void>
+  <void property="fileName">
+   <string>flexible_regression_gui.MultTestStep.xml</string>
+  </void>
+  <void property="testSequence">
+   <object class="java.util.LinkedList">
+    <void method="add">
+     <object class="flexible_regression_gui.TestStep">
+      <void property="method">
+       <object class="flexible_regression_gui.MultTestStep" method="getMethod">
+        <string>setLeft</string>
+        <array class="java.lang.Class" length="1">
+         <void index="0">
+          <class>java.lang.Integer</class>
+         </void>
+        </array>
+       </object>
+      </void>
+      <void property="params">
+       <array class="java.lang.Object" length="1">
+        <void index="0">
+         <int>4</int>
+        </void>
+       </array>
+      </void>
+      <void property="testObject">
+       <object idref="MultTestStep0"/>
+      </void>
+     </object>
+    </void>
+    <void method="add">
+     <object class="flexible_regression_gui.TestStep">
+      <void property="method">
+       <object class="flexible_regression_gui.MultTestStep" method="getMethod">
+        <string>setRight</string>
+        <array class="java.lang.Class" length="1">
+         <void index="0">
+          <class>java.lang.Integer</class>
+         </void>
+        </array>
+       </object>
+      </void>
+      <void property="params">
+       <array class="java.lang.Object" length="1">
+        <void index="0">
+         <int>5</int>
+        </void>
+       </array>
+      </void>
+      <void property="testObject">
+       <object idref="MultTestStep0"/>
+      </void>
+     </object>
+    </void>
+    <void method="add">
+     <object class="flexible_regression_gui.TestStep">
+      <void property="method">
+       <object class="flexible_regression_gui.MultTestStep" method="getMethod">
+        <string>setResult</string>
+        <array class="java.lang.Class" length="1">
+         <void index="0">
+          <class>java.lang.Integer</class>
+         </void>
+        </array>
+       </object>
+      </void>
+      <void property="params">
+       <array class="java.lang.Object" length="1">
+        <void index="0">
+         <int>20</int>
+        </void>
+       </array>
+      </void>
+      <void property="testObject">
+       <object idref="MultTestStep0"/>
+      </void>
+     </object>
+    </void>
+   </object>
+  </void>
+ </object>
+</java>
