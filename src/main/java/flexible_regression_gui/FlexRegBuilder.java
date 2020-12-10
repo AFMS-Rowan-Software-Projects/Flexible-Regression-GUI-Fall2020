@@ -497,7 +497,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			}
 			xmlEncoder.close();
 			
-			
+			//ignore the following part for now. Was just playing around with document builders
 			//String path = file.getAbsolutePath();
 			System.out.println(path);
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
