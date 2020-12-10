@@ -463,6 +463,9 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		        if(index > 0) {
 		            rightModel.moveRow(index, index, index - 1);								
 		            rightTable.setRowSelectionInterval(index - 1, index - 1);										// set selection to the new position
+		            Object temp = dataList.get(index);
+		            dataList.remove(index);
+		            dataList.add(index-1, temp);
 		        }
 			
 		} else if(com.contentEquals("Move Down")) {
@@ -470,7 +473,9 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 	        if(index < rightModel.getRowCount() - 1){
 	            rightModel.moveRow(index, index, index + 1);
 	            rightTable.setRowSelectionInterval(index + 1, index + 1);
-	            
+	            Object temp = dataList.get(index);
+	            dataList.remove(index);
+	            dataList.add(index+1, temp);
 	        }
 		        
 		} else if (com.contentEquals("Save")) {																		// If user presses saves file
