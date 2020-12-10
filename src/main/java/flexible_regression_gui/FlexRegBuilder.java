@@ -1,4 +1,4 @@
-package flexible_regression_gui;
+package src.main.java.flexible_regression_gui;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
