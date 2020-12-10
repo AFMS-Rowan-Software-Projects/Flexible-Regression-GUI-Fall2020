@@ -74,6 +74,27 @@ public class TestSequence {
 	}
 	
 	/**
+	 * No parameter removes the last step added. Does nothing if there are no steps stored
+	 */
+	public void removeStep() {
+		if(testSequence.size() > 0) {
+			testSequence.remove(testSequence.size()-1);
+		}
+	}
+	
+	/**
+	 * Removes the step at the specified index
+	 * @param step to be removed's index
+	 * 
+	 * Maybe need some sort of showSteps() method to make it easier to know what step to remove?
+	 */
+	public void removeStep(int step) {
+		if(step < testSequence.size() && step > -1) {
+			testSequence.remove(step);
+		}
+	}
+	
+	/**
 	 * Runs all the test steps on testCase and returns it's new state.
 	 * 
 	 * User can add several steps to the test sequence and returns them all
@@ -133,6 +154,13 @@ public class TestSequence {
 	}
 	
 	// ENCODING AND DECODING METHODS
+	/**
+	 * Encodes to an XML File. The filename can be called by the static method decode() to be retrieved and edited some more.
+	 * 
+	 * Filename defaults to the Class Name of the Testable object + .xml (e.g. MultTestStep.xml)
+	 * 
+	 * Maybe add another that uses a different filename as a parameter? Or just do setFileName before calling this /shrug
+	 */
 	public void encode() {
 		try {
 			FileOutputStream output = new FileOutputStream(fileName);
@@ -145,6 +173,11 @@ public class TestSequence {
 		}
 	}
 	
+	/**
+	 * Imports an XML file of a test sequence. Static method so it can be used to create TestSequences from just a file
+	 * @param fileName typically in the form Testable.getClass.getName() + ".xml" (e.g. MultTestStep.xml)
+	 * @return a new TestSequence object that can be used for adding steps or running
+	 */
 	public static TestSequence decode(String fileName) {
 		try {
 			FileInputStream input = new FileInputStream(fileName);
