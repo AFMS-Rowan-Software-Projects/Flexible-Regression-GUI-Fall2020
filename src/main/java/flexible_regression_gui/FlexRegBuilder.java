@@ -2,13 +2,14 @@ package src.main.java.flexible_regression_gui;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import javax.swing.filechooser.*;
@@ -55,7 +56,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 
 		// = = = = = = = = Labels = = = = = = = =
 		
-		errorLabel = new JLabel("Error: Wrong file type");
+		errorLabel = new JLabel("Error: Wrong file type");									// Error label
 		errorLabel.setFont(new Font("MV Boli", Font.BOLD, 15));
 		errorLabel.setForeground(Color.RED);
 		errorLabel.setVisible(false);
@@ -78,36 +79,44 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 
 		// = = = = = = = = Buttons = = = = = = = =
 		
+		JButton downBtn = new JButton("Move Down");											// Down button to moves step down
+		downBtn.setAlignmentY(BOTTOM_ALIGNMENT);
+		downBtn.setAlignmentX(CENTER_ALIGNMENT);
+		downBtn.addActionListener(f1);
+		
+		JButton upBtn = new JButton("Move Up");												// Up button to moves step up 
+		upBtn.setAlignmentY(BOTTOM_ALIGNMENT);
+		upBtn.setAlignmentX(CENTER_ALIGNMENT);
+		upBtn.addActionListener(f1);
+		
 		JButton deleteBtn = new JButton("Delete");											// Delete button to delete off application
 		deleteBtn.setAlignmentY(BOTTOM_ALIGNMENT);
 		deleteBtn.setAlignmentX(CENTER_ALIGNMENT);
 		deleteBtn.addActionListener(f1);
 		
-		JButton editBtn = new JButton("Edit");												// Edit button to edit files on right side
-		editBtn.setAlignmentY(BOTTOM_ALIGNMENT);
-		editBtn.setAlignmentX(CENTER_ALIGNMENT);
-		editBtn.addActionListener(f1);
-		
-		JButton saveBtn = new JButton("Save");
+		JButton saveBtn = new JButton("Save");												// Save button
 		saveBtn.addActionListener(f1);
 		
-		JButton createBtn = new JButton("Create File");
+		JButton createBtn = new JButton("Create File");										// Create file button
 		createBtn.setAlignmentY(BOTTOM_ALIGNMENT);
 		createBtn.setAlignmentX(CENTER_ALIGNMENT);
 		createBtn.addActionListener(f1);
 		
-		JButton multiBtn = new JButton("Multiplication");
+		JButton multiBtn = new JButton("Multiplication");									// Multiplication button
 		multiBtn.addActionListener(f1);
+		
+		JButton divideBtn = new JButton("Division");
+		divideBtn.addActionListener(f1);
 
-		JButton addressBtn = new JButton("Address Book");
+		JButton addressBtn = new JButton("Address Book");									// Address Book button
 		addressBtn.addActionListener(f1);
 		
-		JButton addBtn = new JButton("Add ->");												// Add button to transfer sides
+		JButton addBtn = new JButton("Add");												// Add button to transfer sides
 		addBtn.setAlignmentY(BOTTOM_ALIGNMENT);
 		addBtn.setAlignmentX(CENTER_ALIGNMENT);
 		addBtn.addActionListener(f1);
 		
-		JButton removeBtn = new JButton("<- Remove");										// Remove button to remove from panel
+		JButton removeBtn = new JButton("Remove");											// Remove button to remove from panel
 		removeBtn.setAlignmentY(BOTTOM_ALIGNMENT);
 		removeBtn.setAlignmentX(CENTER_ALIGNMENT);
 		removeBtn.addActionListener(f1);
@@ -131,10 +140,26 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		rightTable.setBounds(450, 200, 325, 450);
 		rightTable.setDefaultEditor(Object.class, null);
 		rightTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		rightModel.addColumn("Files:");
+		rightModel.addColumn("Steps:");
 		
 		
 		// = = = = = = = = = Panels = = = = = = = = =
+		
+		JPanel downPanel = new JPanel();													// Panel for move down button
+		downPanel.setBounds(350, 375, 100, 30);
+		downPanel.setLayout(new BorderLayout());
+		downPanel.setAlignmentY(CENTER_ALIGNMENT);
+		downPanel.setAlignmentX(CENTER_ALIGNMENT);
+		downPanel.setBackground(new Color(44,87,70));
+		downPanel.add(downBtn);
+		
+		JPanel upPanel = new JPanel();														// Panel for move up button
+		upPanel.setBounds(350, 350, 100, 30);
+		upPanel.setLayout(new BorderLayout());
+		upPanel.setAlignmentY(CENTER_ALIGNMENT);
+		upPanel.setAlignmentX(CENTER_ALIGNMENT);
+		upPanel.setBackground(new Color(44,87,70));
+		upPanel.add(upBtn);
 		
 		JPanel errorPanel = new JPanel(); 													// Panel for error label 
 		errorPanel.setBackground(new Color(44,87,70));
@@ -143,22 +168,14 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		errorPanel.setAlignmentY(CENTER_ALIGNMENT);
 		errorPanel.setAlignmentX(CENTER_ALIGNMENT);
 		errorPanel.add(errorLabel);
-		
+	
 		JPanel deletePanel = new JPanel();													// Panel for delete button
-		deletePanel.setBounds(350, 300, 100, 30);
+		deletePanel.setBounds(350, 275, 100, 30);
 		deletePanel.setLayout(new BorderLayout());
 		deletePanel.setAlignmentY(CENTER_ALIGNMENT);
 		deletePanel.setAlignmentX(CENTER_ALIGNMENT);
 		deletePanel.setBackground(new Color(44,87,70));
 		deletePanel.add(deleteBtn);
-
-		JPanel editPanel = new JPanel();													// Panel for edit button
-		editPanel.setBounds(350, 275, 100, 30);
-		editPanel.setLayout(new BorderLayout());
-		editPanel.setAlignmentY(CENTER_ALIGNMENT);
-		editPanel.setAlignmentX(CENTER_ALIGNMENT);
-		editPanel.setBackground(new Color(44,87,70));
-		editPanel.add(editBtn);
 		
 		JPanel removePanel = new JPanel();													// Panel for add button
 		removePanel.setBounds(350, 250, 100, 30);
@@ -191,7 +208,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		testPanel.setAlignmentX(RIGHT_ALIGNMENT);
 		testPanel.add(new JScrollPane(rightTable));
 		
-		JPanel savePanel = new JPanel();
+		JPanel savePanel = new JPanel();													// Panel for save button
 		savePanel.setBounds(115, 170, 120, 25);
 		savePanel.setLayout(new BorderLayout());
 		savePanel.setAlignmentY(CENTER_ALIGNMENT);
@@ -203,7 +220,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		subTextPanel.setBackground(new Color(44,87,70));
 		subTextPanel.add(chooseFile);
 		
-		JPanel createFilePanel = new JPanel();
+		JPanel createFilePanel = new JPanel();												// Panel for creating file
 		createFilePanel.setBounds(115, 145, 120, 25);
 		createFilePanel.setLayout(new BorderLayout());
 		createFilePanel.setAlignmentY(CENTER_ALIGNMENT);
@@ -211,7 +228,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		createFilePanel.setBackground(new Color(44,87,70));
 		createFilePanel.add(createBtn);
 		
-		JPanel toolPanel = new JPanel();
+		JPanel toolPanel = new JPanel();													// Panel for tools
 		toolPanel.setBounds(25, 380, 325, 270);
 		toolPanel.setLayout(new GridLayout(2,2));
 		TitledBorder border = BorderFactory.createTitledBorder("Tools");
@@ -219,6 +236,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		border.setTitleColor(Color.DARK_GRAY);
 		toolPanel.setBorder(border);
 		toolPanel.add(multiBtn);
+		toolPanel.add(divideBtn);
 		toolPanel.add(addressBtn);
 
 		JPanel filePanelText = new JPanel(); 												// Panel for file header
@@ -237,14 +255,13 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		filePanel.setAlignmentX(LEFT_ALIGNMENT);
 		filePanel.add(new JScrollPane(leftTable));
 		
-		
-		
+		frame.add(downPanel);
+		frame.add(upPanel);
 		frame.add(savePanel);
 		frame.add(createFilePanel);
 		frame.add(toolPanel);
 		frame.add(deletePanel);
 		frame.add(errorPanel);
-		frame.add(editPanel);
 		frame.add(removePanel);
 		frame.add(addPanel);
 		frame.add(filePanel);															    // Add panels to the frame
@@ -262,57 +279,81 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent event) {
 
 		String com = event.getActionCommand();
-		if (com.contentEquals("Choose File")) {																			// If user presses choose file
-				
-			JFileChooser file = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());				// Create an object of JFileChooser 
-			int tmp = file.showOpenDialog(null);																		// Invoke to show the save dialog
-			if (tmp == JFileChooser.APPROVE_OPTION) {
-				
-				if(ButtonActions.isXML(file.getSelectedFile().getAbsolutePath()) == true) {									// If it's an XML file
+		if (com.contentEquals("Choose File")) {																		// If user presses choose file
+			
+			 String[] options = new String[] {"File", "Folder", "Nevermind"};
+             int response = JOptionPane.showOptionDialog(null,
+                     "Will you pick one .xml file or a folder of .xml files?", null,
+                     JOptionPane.DEFAULT_OPTION, JOptionPane.PLAIN_MESSAGE,
+                     null, options, options[0]);
+             if(response == 0) { 																					// if user picked "One File"
+            	 JFileChooser file = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());		// Create an object of JFileChooser 
+            	 int tmp = file.showOpenDialog(null);																// Invoke to show the save dialog
+            	 if (tmp == JFileChooser.APPROVE_OPTION) {
+                     if(ButtonActions.isXML(file.getSelectedFile().getAbsolutePath())) {							// If it's an XML file
+                         errorLabel.setVisible(false);
+                         leftModel.insertRow(leftModel.getRowCount(), new Object[] { file.getSelectedFile().getAbsolutePath() });
+                     } else {
+                    	 errorLabel.setVisible(true);
+                     }
+            	 }
+            	 
+             } else if (response == 1) {																			// if user picked "Folder"
+                 JFileChooser folder = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+                 folder.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                 int tmp = folder.showOpenDialog(null);																// Invoke to show the save dialog
+                 if (tmp == JFileChooser.APPROVE_OPTION) {
+                     File filesList[] = folder.getSelectedFile().listFiles();
+                     errorLabel.setVisible(false);
+                     for(File file : filesList) { 																	// insert every .xml file to left table
+                         String filepath = file.toString();
+                         if(ButtonActions.isXML(filepath)) {
+                             leftModel.insertRow(leftModel.getRowCount(), new Object[] { filepath });
+                         } else {
+                        	 errorLabel.setText("Error: Some files not .xml files");
+                        	 errorLabel.setVisible(true);
+                         }
+                     }
+                 }
+             }
+             
+             // otherwise, user picked "Nevermind," do nothing	
+			
+		} else if(com.contentEquals("Add")) {													// Add to test sequence, opens up steps
+			JTextComponent text = null;		// Change null to something else.
+			FileReader inputReader = null;
+			try {
+				try {
+					inputReader = new FileReader((String) leftTable.getValueAt(leftTable.getSelectedRow(), 0));
+					text.read(inputReader, (String) leftTable.getValueAt(leftTable.getSelectedRow(), 0)); 
 					errorLabel.setVisible(false);
-					leftModel.insertRow(leftModel.getRowCount(), new Object[] { file.getSelectedFile().getAbsolutePath() });// Add row that contains file name
-					
-				} else {
+				
+				} catch(IOException e) {
+					errorLabel.setText("Error: Failed to display steps");
 					errorLabel.setVisible(true);
 				}
-			}
 			
-		} else if(com.contentEquals("Add ->")) {
-			try {
-				rightModel.insertRow(rightModel.getRowCount(), new Object[] { leftTable.getValueAt(leftTable.getSelectedRow(), 0) } );
-				leftModel.removeRow(leftTable.getSelectedRow());
-				errorLabel.setVisible(false);
+				try {
+					inputReader.close();
+					
+				} catch (IOException e) {
+					errorLabel.setText("Error: Failed to close reader");
+					errorLabel.setVisible(true);
+				}
 				
 			} catch(ArrayIndexOutOfBoundsException e) {
-				errorLabel.setText("Error: Wrong operation");
+				errorLabel.setText("Error: Choose file to add.");
 				errorLabel.setVisible(true);
 			}
 			
-		} else if(com.contentEquals("<- Remove")) {
+		} else if(com.contentEquals("Remove")) {
 			try {
-				leftModel.insertRow(leftModel.getRowCount(), new Object[] { rightTable.getValueAt(rightTable.getSelectedRow(), 0) } );
 				rightModel.removeRow(rightTable.getSelectedRow());
 				errorLabel.setVisible(false);
 				
 			} catch(ArrayIndexOutOfBoundsException e) {
 				errorLabel.setText("Error: Wrong operation");
 				errorLabel.setVisible(true);
-			}
-			
-		} else if(com.contentEquals("Edit")) {
-			try {
-				PopUp.popUp((String) rightTable.getValueAt(rightTable.getSelectedRow(), 0));
-				errorLabel.setVisible(false);
-				
-			} catch(ArrayIndexOutOfBoundsException | IOException e) {
-				try {
-					PopUp.popUp((String) leftTable.getValueAt(leftTable.getSelectedRow(), 0));
-					errorLabel.setVisible(false);
-
-				} catch(ArrayIndexOutOfBoundsException | IOException ex) {
-					errorLabel.setText("Error: Select a file to edit");
-					errorLabel.setVisible(true);
-				}
 			}
 			
 		} else if(com.contentEquals("Delete")) {
@@ -331,7 +372,11 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			}
 			
 		} else if(com.contentEquals("Multiplication")) {
-			String left = JOptionPane.showInputDialog("Left Input: ");
+			// Waiting on back end so I can connect and display steps
+			String multi = "Multiplication: __________________";
+			rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });			
+			
+			/*String left = JOptionPane.showInputDialog("Left Input: ");
 			String right = JOptionPane.showInputDialog("Right Input: ");
 			String exp = JOptionPane.showInputDialog("Expected Result: ");
 			
@@ -341,70 +386,100 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			
 			BeanBuilder temp = new BeanBuilder(leftIn, rightIn, expResult);
 			//JOptionPane.showInternalMessageDialog(frame.getContentPane(), temp.toString() + "\n" + temp.assertEqual());
-			// Assert equals is boolean, tells if two are equal.
+			// Assert equals is boolean, tells if two are equal.*/
+			
+		} else if(com.contentEquals("Division")) {
+			// Enter code for division
+			
+		} else if(com.contentEquals("Address Book")) {
+				// Waiting on back end so I can connect and display steps
+				String multi = "Address Book Test: __________________";
+				rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });		
 			
 		} else if(com.contentEquals("Create File")) {
 			// By Emily Griscom
 			// prompt for folder
-            JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            int tmp = chooser.showOpenDialog(null);																		// Invoke to show the save dialog
-            if (tmp == JFileChooser.APPROVE_OPTION) {
-                // name of folder that new file will be placed in
-                String folderName = chooser.getSelectedFile().getPath();
-                
-                // prompt for name of .xml file
-                JFrame createFrame = new JFrame("Flexible Regression Builder");
-                String fileName  = JOptionPane.showInputDialog(createFrame,
-                            "Please enter a name for your file."
-                          + " No need to include '.xml' in the name", null);
-                
-                // if user didn't cancel, create new file in folder
-                if(fileName != null) {
-                	if(ButtonActions.isBlank(fileName)) {
-                        errorLabel.setText("Error: Blank filename");
-                        errorLabel.setVisible(true);
-                    } else {    
-                        try {
-                            File newFile = new File(folderName + "//" + fileName + ".xml");
-                            newFile.createNewFile();
-                            errorLabel.setVisible(false);
-                        } catch (IOException ex) {
-                            errorLabel.setText("Error: Invalid characters in filename");
-                            errorLabel.setVisible(true);
-                        }
-                    }
-                }
+			JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+			int tmp = chooser.showOpenDialog(null);																		// Invoke to show the save dialog
+			if (tmp == JFileChooser.APPROVE_OPTION) {
+				// name of folder that new file will be placed in
+				String folderName = chooser.getSelectedFile().getPath();
+			                
+				// prompt for name of .xml file
+			    JFrame createFrame = new JFrame("Flexible Regression Builder");
+			    String fileName  = JOptionPane.showInputDialog(createFrame,
+			    		"Please enter a name for your file."
+			    	    + " No need to include '.xml' in the name", null);
+			                
+			    // if user didn't cancel, create new file in folder
+			    if(fileName != null) {
+			    	if(ButtonActions.isBlank(fileName)) {
+			    		errorLabel.setText("Error: Blank filename");
+			            errorLabel.setVisible(true);
+			         /*   
+			        } else if(ButtonActions.exists(folderName + "//" + fileName + ".xml")) {   
+			            errorLabel.setText("Error: File already exists");
+			            errorLabel.setVisible(true);
+			        	*/
+			        } else { // no errors, create file
+			        	try {
+			        		File newFile = new File(folderName + "//" + fileName + ".xml");
+			                newFile.createNewFile();
+			                errorLabel.setVisible(false);
+			            } catch (IOException ex) {
+			                errorLabel.setText("Error: Invalid characters in filename");
+			                errorLabel.setVisible(true);
+			            }
+			        }
+			    }
             }  
             
-		} else if (com.contentEquals("Save")) {																			// If user presses saves file
+		} else if(com.contentEquals("Move Up")) {
+			 int index = rightTable.getSelectedRow();
+		        if(index > 0) {
+		            rightModel.moveRow(index, index, index - 1);								
+		            rightTable.setRowSelectionInterval(index - 1, index - 1);										// set selection to the new position
+		        }
+			
+		} else if(com.contentEquals("Move Down")) {
+			int index = rightTable.getSelectedRow();
+	        if(index < rightModel.getRowCount() - 1){
+	            rightModel.moveRow(index, index, index + 1);
+	            rightTable.setRowSelectionInterval(index + 1, index + 1);
+	            
+	        }
+		        
+		} else if (com.contentEquals("Save")) {																		// If user presses saves file
+			/*JTextComponent text = rightModel;
 			FileWriter writer = null; 
 			try {
-				/*try {
+				try {
 					writer = new FileWriter((String) rightModel.getValueAt(rightTable.getSelectedRow(), 0));
 					
 				} catch(ArrayIndexOutOfBoundsException e) {
 					leftModel.removeRow(leftTable.getSelectedRow());
-				}*/
+				}
 				
-				//writer = new FileWriter(path);
-				//text.write(writer);
+				writer = new FileWriter(path);
+				text.write(writer);
 				writer.close();
 				//saveLabel.setVisible(true);
-				//errorLabel.setVisible(false);
+				errorLabel.setText("File Saved");
+				errorLabel.setVisible(true);
 				int delay = 5000; 																					// Milliseconds
 				   ActionListener taskPerformer = new ActionListener() {
 				       public void actionPerformed(ActionEvent evt) {
 				           errorLabel.setVisible(false);
 				       }
 				   };
-				   
+				
 				new javax.swing.Timer(delay, taskPerformer).start();												// Delay removal of saveLabel
 				
 			} catch (IOException e) {
 				errorLabel.setText("Error: Save failed");
 				errorLabel.setVisible(true);
-			}	
+			}	*/
 		}
 	}
 }
