@@ -376,7 +376,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			String multi = "Multiplication: __________________";
 			rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });			
 			
-			/*String left = JOptionPane.showInputDialog("Left Input: ");
+			String left = JOptionPane.showInputDialog("Left Input: ");
 			String right = JOptionPane.showInputDialog("Right Input: ");
 			String exp = JOptionPane.showInputDialog("Expected Result: ");
 			
@@ -389,6 +389,18 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			// Assert equals is boolean, tells if two are equal.*/
 			
 		} else if(com.contentEquals("Division")) {
+			String numerator = JOptionPane.showInputDialog("Numerator: ");
+			String denominator = JOptionPane.showInputDialog("Denominator: ");
+			
+			double num = Double.parseDouble(numerator);
+			double denom = Double.parseDouble(denominator);
+			
+			Divide div = new Divide();
+			div.setNum(num);
+			div.setDenom(denom);
+			div.setResult();
+			String divideString = "Divide: Num=" + num + ", Denom=" + denom + ", Result=" + div.getResult();
+			rightModel.insertRow(rightModel.getRowCount(), new Object[] { divideString });
 			// Enter code for division
 			
 		} else if(com.contentEquals("Address Book")) {
