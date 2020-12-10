@@ -14,7 +14,7 @@ public class DivideEncoder {
 		
 		Divide div = new Divide();
 		div.setNum(5);
-		div.setDenom(50);
+		div.setDenom(5);
 		div.setResult();
 		/*
 		XMLEncoder xmlEncoder = new XMLEncoder(

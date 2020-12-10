@@ -8,13 +8,26 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
+import java.beans.XMLEncoder;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import javax.swing.filechooser.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.text.JTextComponent;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.xml.sax.SAXException;
 
 /**
  * Implements a GUI
@@ -29,6 +42,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 	static JTable rightTable;
 	static DefaultTableModel rightModel;
 	static DefaultTableModel leftModel; 
+	private ArrayList<Object> dataList = new ArrayList<>();
 
 	FlexRegBuilder() {}																		// Constructor
 
@@ -39,6 +53,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 	 */
 	public static void main(String args[]) { createWindow(); }
 
+	
 	/**
 	 * Tools to create the window.
 	 */
@@ -401,7 +416,8 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			div.setResult();
 			String divideString = "Divide: Num=" + num + ", Denom=" + denom + ", Result=" + div.getResult();
 			rightModel.insertRow(rightModel.getRowCount(), new Object[] { divideString });
-			// Enter code for division
+			dataList.add(div);
+			System.out.println(dataList.get(0).toString());
 			
 		} else if(com.contentEquals("Address Book")) {
 				// Waiting on back end so I can connect and display steps
@@ -463,6 +479,47 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 	        }
 		        
 		} else if (com.contentEquals("Save")) {																		// If user presses saves file
+			File file = new File("divide.xml");
+			String path = file.getAbsolutePath();
+			FileOutputStream fos = null;
+			for(int i=0; i<dataList.size(); i++) {
+				System.out.println(i);
+				}
+			try {
+				fos = new FileOutputStream(path);
+			} catch (FileNotFoundException e2) {
+				e2.printStackTrace();
+			}
+			BufferedOutputStream bos = new BufferedOutputStream(fos);
+			XMLEncoder xmlEncoder = new XMLEncoder(bos);
+			for(int i=0; i<dataList.size(); i++) {
+			xmlEncoder.writeObject(dataList.get(i));
+			}
+			xmlEncoder.close();
+			
+			
+			//String path = file.getAbsolutePath();
+			System.out.println(path);
+			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder docBuilder = null;
+			Document doc = null;
+			try {
+				docBuilder = docFactory.newDocumentBuilder();
+			} catch (ParserConfigurationException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			try {
+				doc = docBuilder.parse(path);
+			} catch (SAXException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			for(int i=0; i<dataList.size()-1; i++) {
+			doc.appendChild((Node) dataList.get(i));
+			}
+			
+			
 			/*JTextComponent text = rightModel;
 			FileWriter writer = null; 
 			try {
@@ -475,8 +532,9 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 				
 				writer = new FileWriter(path);
 				text.write(writer);
+				
 				writer.close();
-				//saveLabel.setVisible(true);
+				saveLabel.setVisible(true);
 				errorLabel.setText("File Saved");
 				errorLabel.setVisible(true);
 				int delay = 5000; 																					// Milliseconds
@@ -492,6 +550,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 				errorLabel.setText("Error: Save failed");
 				errorLabel.setVisible(true);
 			}	*/
+			
 		}
 	}
 }
