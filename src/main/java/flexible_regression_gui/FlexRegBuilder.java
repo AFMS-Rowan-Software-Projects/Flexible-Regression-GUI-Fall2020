@@ -417,12 +417,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			String divideString = "Divide: Num=" + num + ", Denom=" + denom + ", Result=" + div.getResult();
 			rightModel.insertRow(rightModel.getRowCount(), new Object[] { divideString });
 			dataList.add(div);
-			System.out.println(dataList.get(0).toString());
 			
-		} else if(com.contentEquals("Address Book")) {
-				// Waiting on back end so I can connect and display steps
-				String multi = "Address Book Test: __________________";
-				rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });		
 			
 		} else if(com.contentEquals("Create File")) {
 			// By Emily Griscom
@@ -482,9 +477,6 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			File file = new File("divide.xml");
 			String path = file.getAbsolutePath();
 			FileOutputStream fos = null;
-			for(int i=0; i<dataList.size(); i++) {
-				System.out.println(i);
-				}
 			try {
 				fos = new FileOutputStream(path);
 			} catch (FileNotFoundException e2) {
