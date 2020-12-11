@@ -387,9 +387,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			}
 			
 		} else if(com.contentEquals("Multiplication")) {
-			// Waiting on back end so I can connect and display steps
-			String multi = "Multiplication: __________________";
-			rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });			
+			// Waiting on back end so I can connect and display steps		
 			
 			String left = JOptionPane.showInputDialog("Left Input: ");
 			String right = JOptionPane.showInputDialog("Right Input: ");
@@ -399,7 +397,13 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			int rightIn = Integer.parseInt(right);
 			int expResult = Integer.parseInt(exp);
 			
-			BeanBuilder temp = new BeanBuilder(leftIn, rightIn, expResult);
+			//BeanBuilder temp = new BeanBuilder(leftIn, rightIn, expResult);
+			MultBean temp = new MultBean();
+			temp.setLeft(leftIn);
+			temp.setRight(rightIn);
+			String multi = "Multiplication: Left=" + leftIn + ", Right=" + rightIn + ", Expected Result:" + expResult;
+			rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });
+			dataList.add(temp);
 			//JOptionPane.showInternalMessageDialog(frame.getContentPane(), temp.toString() + "\n" + temp.assertEqual());
 			// Assert equals is boolean, tells if two are equal.*/
 			
@@ -479,11 +483,14 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 	        }
 		        
 		} else if (com.contentEquals("Save")) {																		// If user presses saves file
-			File file = new File("divide.xml");
-			String path = file.getAbsolutePath();
+			int index = leftTable.getSelectedRow();
+			String file = (String) leftModel.getValueAt(index, 0); 
+			System.out.println(file);
+			//File file = new File("divide.xml");
+			//String path = file.getAbsolutePath();
 			FileOutputStream fos = null;
 			try {
-				fos = new FileOutputStream(path);
+				fos = new FileOutputStream(file);
 			} catch (FileNotFoundException e2) {
 				e2.printStackTrace();
 			}
@@ -496,6 +503,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			
 			//ignore the following part for now. Was just playing around with document builders
 			//String path = file.getAbsolutePath();
+			/*
 			System.out.println(path);
 			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = null;
@@ -515,7 +523,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			for(int i=0; i<dataList.size()-1; i++) {
 			doc.appendChild((Node) dataList.get(i));
 			}
-			
+			*/
 			
 			/*JTextComponent text = rightModel;
 			FileWriter writer = null; 
