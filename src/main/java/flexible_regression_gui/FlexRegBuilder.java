@@ -8,9 +8,12 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
+import java.beans.XMLDecoder;
 import java.beans.XMLEncoder;
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
@@ -26,7 +29,9 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 /**
@@ -104,7 +109,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		upBtn.setAlignmentX(CENTER_ALIGNMENT);
 		upBtn.addActionListener(f1);
 		
-		JButton deleteBtn = new JButton("Delete");											// Delete button to delete off application
+		JButton deleteBtn = new JButton("Delete File");											// Delete button to delete off application
 		deleteBtn.setAlignmentY(BOTTOM_ALIGNMENT);
 		deleteBtn.setAlignmentX(CENTER_ALIGNMENT);
 		deleteBtn.addActionListener(f1);
@@ -122,9 +127,11 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		
 		JButton divideBtn = new JButton("Division");
 		divideBtn.addActionListener(f1);
-
+		
+		/*
 		JButton addressBtn = new JButton("Address Book");									// Address Book button
 		addressBtn.addActionListener(f1);
+		*/
 		
 		JButton addBtn = new JButton("Add");												// Add button to transfer sides
 		addBtn.setAlignmentY(BOTTOM_ALIGNMENT);
@@ -252,7 +259,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		toolPanel.setBorder(border);
 		toolPanel.add(multiBtn);
 		toolPanel.add(divideBtn);
-		toolPanel.add(addressBtn);
+		//toolPanel.add(addressBtn);
 
 		JPanel filePanelText = new JPanel(); 												// Panel for file header
 		filePanelText.setBounds(100, 50, 150, 125);
@@ -334,36 +341,49 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
              
              // otherwise, user picked "Nevermind," do nothing	
 			
-		} else if(com.contentEquals("Add")) {													// Add to test sequence, opens up steps
-			JTextComponent text = null;		// Change null to something else.
-			FileReader inputReader = null;
+		} else if(com.contentEquals("Add")) {		// Add to test sequence, opens up steps
+			int index = leftTable.getSelectedRow();
+			String tempFile = (String) leftModel.getValueAt(index, 0);
+			FileInputStream fis = null;
 			try {
-				try {
-					inputReader = new FileReader((String) leftTable.getValueAt(leftTable.getSelectedRow(), 0));
-					text.read(inputReader, (String) leftTable.getValueAt(leftTable.getSelectedRow(), 0)); 
-					errorLabel.setVisible(false);
-				
-				} catch(IOException e) {
-					errorLabel.setText("Error: Failed to display steps");
-					errorLabel.setVisible(true);
-				}
+				fis = new FileInputStream(tempFile);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+			BufferedInputStream bis = new BufferedInputStream(fis);
+			XMLDecoder decoder = new XMLDecoder(bis);
+			//read file in
+			Object obj = decoder.readObject();
+			String tempString = obj.getClass().toString().substring(44); 
+			// substring(44) used due to the file path currently containing 
+			// 	 "class src.main.java.flexible_regression_gui." before the class name
+			// Adjust this number accordingly if there are any errors.
+			// Test print:
+			// System.out.println(obj.getClass().toString());
 			
-				try {
-					inputReader.close();
-					
-				} catch (IOException e) {
-					errorLabel.setText("Error: Failed to close reader");
-					errorLabel.setVisible(true);
-				}
-				
-			} catch(ArrayIndexOutOfBoundsException e) {
-				errorLabel.setText("Error: Choose file to add.");
-				errorLabel.setVisible(true);
+			//If new buttons are added in, their class will need to be added to the switch
+			Divide tempDivide = new Divide();
+			MultBean tempMult = new MultBean();
+			switch(tempString) { 
+				case "Divide" : 	
+					tempDivide = (Divide) obj;
+					dataList.add(tempDivide);
+					String divideString = "Divide: Num=" + tempDivide.getNum() + ", Denom=" + tempDivide.getDenom() + ", Result=" + tempDivide.getResult();
+					rightModel.insertRow(rightModel.getRowCount(), new Object[] { divideString });
+					break;
+				case "MultBean" :
+					tempMult = (MultBean) obj;
+					dataList.add(tempMult);
+					String multi = "Multiplication: Left=" + tempMult.getLeft() + ", Right=" + tempMult.getRight() + ", Expected Result:" + tempMult.getLeft()*tempMult.getRight();
+					rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });
+					break;
 			}
 			
 		} else if(com.contentEquals("Remove")) {
 			try {
-				rightModel.removeRow(rightTable.getSelectedRow());
+				int index = rightTable.getSelectedRow();
+				rightModel.removeRow(index);
+				dataList.remove(index);
 				errorLabel.setVisible(false);
 				
 			} catch(ArrayIndexOutOfBoundsException e) {
@@ -371,10 +391,10 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 				errorLabel.setVisible(true);
 			}
 			
-		} else if(com.contentEquals("Delete")) {
+		} else if(com.contentEquals("Delete File")) {
 			try {
 				try {
-					rightModel.removeRow(rightTable.getSelectedRow());
+					leftModel.removeRow(leftTable.getSelectedRow());
 					
 				} catch(ArrayIndexOutOfBoundsException e) {
 					leftModel.removeRow(leftTable.getSelectedRow());
@@ -387,7 +407,6 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			}
 			
 		} else if(com.contentEquals("Multiplication")) {
-			// Waiting on back end so I can connect and display steps		
 			
 			String left = JOptionPane.showInputDialog("Left Input: ");
 			String right = JOptionPane.showInputDialog("Right Input: ");
