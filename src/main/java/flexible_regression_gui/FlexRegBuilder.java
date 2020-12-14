@@ -20,6 +20,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Stack;
 
 import javax.swing.filechooser.*;
 import javax.swing.table.DefaultTableModel;
@@ -352,33 +353,39 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			}
 			BufferedInputStream bis = new BufferedInputStream(fis);
 			XMLDecoder decoder = new XMLDecoder(bis);
+			
 			//read file in
-			Object obj = decoder.readObject();
-			String tempString = obj.getClass().toString().substring(44); 
-			// substring(44) used due to the file path currently containing 
-			// 	 "class src.main.java.flexible_regression_gui." before the class name
-			// Adjust this number accordingly if there are any errors.
-			// Test print:
-			// System.out.println(obj.getClass().toString());
+			Object obj = null;
+			boolean firstLoop = true;
+			while(obj != null || firstLoop) {
+				obj = decoder.readObject();
+				String tempString = obj.getClass().toString().substring(44); 
+				// substring(44) used due to the file path currently containing 
+				// 	 "class src.main.java.flexible_regression_gui." before the class name
+				// Adjust this number accordingly if there are any errors.
+				// Test print:
+				// System.out.println(obj.getClass().toString());
 			
-			//If new buttons are added in, their class will need to be added to the switch
-			Divide tempDivide = new Divide();
-			MultBean tempMult = new MultBean();
-			switch(tempString) { 
-				case "Divide" : 	
-					tempDivide = (Divide) obj;
-					dataList.add(tempDivide);
-					String divideString = "Divide: Num=" + tempDivide.getNum() + ", Denom=" + tempDivide.getDenom() + ", Result=" + tempDivide.getResult();
-					rightModel.insertRow(rightModel.getRowCount(), new Object[] { divideString });
-					break;
-				case "MultBean" :
-					tempMult = (MultBean) obj;
-					dataList.add(tempMult);
-					String multi = "Multiplication: Left=" + tempMult.getLeft() + ", Right=" + tempMult.getRight() + ", Expected Result:" + tempMult.getLeft()*tempMult.getRight();
-					rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });
-					break;
+				//If new buttons are added in, their class will need to be added to the switch
+				Divide tempDivide = new Divide();
+				MultBean tempMult = new MultBean();
+				switch(tempString) { 
+					case "Divide" : 	
+						tempDivide = (Divide) obj;
+						dataList.add(tempDivide);
+						String divideString = "Divide: Num=" + tempDivide.getNum() + ", Denom=" + tempDivide.getDenom() + ", Result=" + tempDivide.getResult();
+						rightModel.insertRow(rightModel.getRowCount(), new Object[] { divideString });
+						break;
+					case "MultBean" :
+						tempMult = (MultBean) obj;
+						dataList.add(tempMult);
+						String multi = "Multiplication: Left=" + tempMult.getLeft() + ", Right=" + tempMult.getRight() + ", Expected Result:" + tempMult.getLeft()*tempMult.getRight();
+						rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });
+						break;
+				}
+				firstLoop = false;
 			}
-			
+			decoder.close();
 		} else if(com.contentEquals("Remove")) {
 			try {
 				int index = rightTable.getSelectedRow();
@@ -519,61 +526,6 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			xmlEncoder.writeObject(dataList.get(i));
 			}
 			xmlEncoder.close();
-			
-			//ignore the following part for now. Was just playing around with document builders
-			//String path = file.getAbsolutePath();
-			/*
-			System.out.println(path);
-			DocumentBuilderFactory docFactory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder docBuilder = null;
-			Document doc = null;
-			try {
-				docBuilder = docFactory.newDocumentBuilder();
-			} catch (ParserConfigurationException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-			try {
-				doc = docBuilder.parse(path);
-			} catch (SAXException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			for(int i=0; i<dataList.size()-1; i++) {
-			doc.appendChild((Node) dataList.get(i));
-			}
-			*/
-			
-			/*JTextComponent text = rightModel;
-			FileWriter writer = null; 
-			try {
-				try {
-					writer = new FileWriter((String) rightModel.getValueAt(rightTable.getSelectedRow(), 0));
-					
-				} catch(ArrayIndexOutOfBoundsException e) {
-					leftModel.removeRow(leftTable.getSelectedRow());
-				}
-				
-				writer = new FileWriter(path);
-				text.write(writer);
-				
-				writer.close();
-				saveLabel.setVisible(true);
-				errorLabel.setText("File Saved");
-				errorLabel.setVisible(true);
-				int delay = 5000; 																					// Milliseconds
-				   ActionListener taskPerformer = new ActionListener() {
-				       public void actionPerformed(ActionEvent evt) {
-				           errorLabel.setVisible(false);
-				       }
-				   };
-				
-				new javax.swing.Timer(delay, taskPerformer).start();												// Delay removal of saveLabel
-				
-			} catch (IOException e) {
-				errorLabel.setText("Error: Save failed");
-				errorLabel.setVisible(true);
-			}	*/
 			
 		}
 	}
