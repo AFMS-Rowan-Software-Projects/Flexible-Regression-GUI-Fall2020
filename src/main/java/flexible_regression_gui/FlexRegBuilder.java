@@ -1,5 +1,6 @@
 package src.main.java.flexible_regression_gui;
 
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
@@ -342,61 +343,63 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
              // otherwise, user picked "Nevermind," do nothing	
 			
 		} else if(com.contentEquals("Add")) {		// Add to test sequence, opens up steps
-                    try {
-                        int index = leftTable.getSelectedRow();
-                        String tempFile = (String) leftModel.getValueAt(index, 0);
+                    int index = leftTable.getSelectedRow();
+                        // NOTE: I didn't use "catch" for this error because
+                        // ArrayIndexOutOfBoundsException is reserved for exiting the while loop
+                    if(index == -1) {
+                        errorLabel.setText("Error: Select a file to add");
+                        errorLabel.setVisible(true);
+                    }
+                    else {
+                        try { 
+                            String tempFile = (String) leftModel.getValueAt(index, 0);
                         
-                        FileInputStream fis = new FileInputStream(tempFile);
-                        BufferedInputStream bis = new BufferedInputStream(fis);
-                        XMLDecoder decoder = new XMLDecoder(bis);
+                            FileInputStream fis = new FileInputStream(tempFile);
+                            BufferedInputStream bis = new BufferedInputStream(fis);
+                            XMLDecoder decoder = new XMLDecoder(bis);
 			
-                        //read file in
-                        Object obj = null;
-                        boolean firstLoop = true;
-                        while(obj != null || firstLoop) {
-                            obj = decoder.readObject();
-                            String tempString = obj.getClass().toString().substring(44); 
-                            // substring(44) used due to the file path currently containing 
-                            // "class src.main.java.flexible_regression_gui." before the class name
-                            // Adjust this number accordingly if there are any errors.
-                            // Test print:
-                            System.out.println(obj.getClass().toString());
+                            //read file in
+                            Object obj = null;
+                            boolean firstLoop = true;
+                            while(obj != null || firstLoop) {
+                                obj = decoder.readObject();
+                            
+                                String tempString = obj.getClass().toString().substring(44); 
+                                // substring(44) used due to the file path currently containing 
+                                // "class src.main.java.flexible_regression_gui." before the class name
+                                // Adjust this number accordingly if there are any errors.
+                                // Test print:
+                                System.out.println(obj.getClass().toString());
 			
-                            //If new buttons are added in, their class will need to be added to the switch
-                            Divide tempDivide = new Divide();
-                            MultBean tempMult = new MultBean();
-                            switch(tempString) { 
-				case "Divide" : 	
-                                    tempDivide = (Divide) obj;
-                                    dataList.add(tempDivide);
-                                    String divideString = "Divide: Num=" + tempDivide.getNum() + ", Denom=" + tempDivide.getDenom() + ", Result=" + tempDivide.getResult();
-                                    rightModel.insertRow(rightModel.getRowCount(), new Object[] { divideString });
-                                    break;
-				case "MultBean" :
-                                    tempMult = (MultBean) obj;
-                                    dataList.add(tempMult);
-                                    String multi = "Multiplication: Left=" + tempMult.getLeft() + ", Right=" + tempMult.getRight() + ", Expected Result:" + tempMult.getLeft()*tempMult.getRight();
-                                    rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });
-                                    break;
-				}
+                                //If new buttons are added in, their class will need to be added to the switch
+                                Divide tempDivide = new Divide();
+                                MultBean tempMult = new MultBean();
+                                switch(tempString) { 
+                                    case "Divide" : 	
+                                        tempDivide = (Divide) obj;
+                                        dataList.add(tempDivide);
+                                        String divideString = "Divide: Num=" + tempDivide.getNum() + ", Denom=" + tempDivide.getDenom() + ", Result=" + tempDivide.getResult();
+                                        rightModel.insertRow(rightModel.getRowCount(), new Object[] { divideString });
+                                        break;
+                                    case "MultBean" :
+                                        tempMult = (MultBean) obj;
+                                        dataList.add(tempMult);
+                                        String multi = "Multiplication: Left=" + tempMult.getLeft() + ", Right=" + tempMult.getRight() + ", Expected Result:" + tempMult.getLeft()*tempMult.getRight();
+                                        rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });
+                                        break;
+                                }
                                 firstLoop = false;
                             }
                             decoder.close();
                             errorLabel.setVisible(false);
 			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-                                errorLabel.setText("Error: File not found");
-			        errorLabel.setVisible(true);
-			} catch(ArrayIndexOutOfBoundsException e) {
-                                e.printStackTrace();
-				errorLabel.setText("Error: Select a file to add");
-			        errorLabel.setVisible(true);
-			} catch(StringIndexOutOfBoundsException e) {
-                                e.printStackTrace();
-				errorLabel.setText("Error: String index out of range");
-			        errorLabel.setVisible(true);
+                            e.printStackTrace();
+                            errorLabel.setText("Error: File not found");
+                            errorLabel.setVisible(true);
+			} catch(ArrayIndexOutOfBoundsException e) { // seems to be the only way to end the loop?
+                            errorLabel.setVisible(false); // this is not an error, we just left the loop by reading all of the file
 			}
-
+                    }
 		} else if(com.contentEquals("Remove")) {
 			try {
 				int index = rightTable.getSelectedRow();
