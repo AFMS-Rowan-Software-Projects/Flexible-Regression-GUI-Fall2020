@@ -39,7 +39,7 @@ import org.xml.sax.SAXException;
  * Implements a GUI
  * 
  * @author  Ryan Bothmann
- * @version 10/21/2020
+ * @version 12/15/2020
  */
 public class FlexRegBuilder extends JFrame implements ActionListener {
 	  
@@ -333,59 +333,70 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
                          if(ButtonActions.isXML(filepath)) {
                              leftModel.insertRow(leftModel.getRowCount(), new Object[] { filepath });
                          } else {
-                        	 errorLabel.setText("Error: Some files not .xml files");
-                        	 errorLabel.setVisible(true);
+                        	errorLabel.setText("Error: Some files not .xml files");
+                        	errorLabel.setVisible(true);
                          }
                      }
                  }
              }
-             
              // otherwise, user picked "Nevermind," do nothing	
 			
 		} else if(com.contentEquals("Add")) {		// Add to test sequence, opens up steps
-			int index = leftTable.getSelectedRow();
-			String tempFile = (String) leftModel.getValueAt(index, 0);
-			FileInputStream fis = null;
-			try {
-				fis = new FileInputStream(tempFile);
+                    try {
+                        int index = leftTable.getSelectedRow();
+                        String tempFile = (String) leftModel.getValueAt(index, 0);
+                        
+                        FileInputStream fis = new FileInputStream(tempFile);
+                        BufferedInputStream bis = new BufferedInputStream(fis);
+                        XMLDecoder decoder = new XMLDecoder(bis);
+			
+                        //read file in
+                        Object obj = null;
+                        boolean firstLoop = true;
+                        while(obj != null || firstLoop) {
+                            obj = decoder.readObject();
+                            String tempString = obj.getClass().toString().substring(44); 
+                            // substring(44) used due to the file path currently containing 
+                            // "class src.main.java.flexible_regression_gui." before the class name
+                            // Adjust this number accordingly if there are any errors.
+                            // Test print:
+                            System.out.println(obj.getClass().toString());
+			
+                            //If new buttons are added in, their class will need to be added to the switch
+                            Divide tempDivide = new Divide();
+                            MultBean tempMult = new MultBean();
+                            switch(tempString) { 
+				case "Divide" : 	
+                                    tempDivide = (Divide) obj;
+                                    dataList.add(tempDivide);
+                                    String divideString = "Divide: Num=" + tempDivide.getNum() + ", Denom=" + tempDivide.getDenom() + ", Result=" + tempDivide.getResult();
+                                    rightModel.insertRow(rightModel.getRowCount(), new Object[] { divideString });
+                                    break;
+				case "MultBean" :
+                                    tempMult = (MultBean) obj;
+                                    dataList.add(tempMult);
+                                    String multi = "Multiplication: Left=" + tempMult.getLeft() + ", Right=" + tempMult.getRight() + ", Expected Result:" + tempMult.getLeft()*tempMult.getRight();
+                                    rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });
+                                    break;
+				}
+                                firstLoop = false;
+                            }
+                            decoder.close();
+                            errorLabel.setVisible(false);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
+                                errorLabel.setText("Error: File not found");
+			        errorLabel.setVisible(true);
+			} catch(ArrayIndexOutOfBoundsException e) {
+                                e.printStackTrace();
+				errorLabel.setText("Error: Select a file to add");
+			        errorLabel.setVisible(true);
+			} catch(StringIndexOutOfBoundsException e) {
+                                e.printStackTrace();
+				errorLabel.setText("Error: String index out of range");
+			        errorLabel.setVisible(true);
 			}
-			BufferedInputStream bis = new BufferedInputStream(fis);
-			XMLDecoder decoder = new XMLDecoder(bis);
-			
-			//read file in
-			Object obj = null;
-			boolean firstLoop = true;
-			while(obj != null || firstLoop) {
-				obj = decoder.readObject();
-				String tempString = obj.getClass().toString().substring(44); 
-				// substring(44) used due to the file path currently containing 
-				// 	 "class src.main.java.flexible_regression_gui." before the class name
-				// Adjust this number accordingly if there are any errors.
-				// Test print:
-				// System.out.println(obj.getClass().toString());
-			
-				//If new buttons are added in, their class will need to be added to the switch
-				Divide tempDivide = new Divide();
-				MultBean tempMult = new MultBean();
-				switch(tempString) { 
-					case "Divide" : 	
-						tempDivide = (Divide) obj;
-						dataList.add(tempDivide);
-						String divideString = "Divide: Num=" + tempDivide.getNum() + ", Denom=" + tempDivide.getDenom() + ", Result=" + tempDivide.getResult();
-						rightModel.insertRow(rightModel.getRowCount(), new Object[] { divideString });
-						break;
-					case "MultBean" :
-						tempMult = (MultBean) obj;
-						dataList.add(tempMult);
-						String multi = "Multiplication: Left=" + tempMult.getLeft() + ", Right=" + tempMult.getRight() + ", Expected Result:" + tempMult.getLeft()*tempMult.getRight();
-						rightModel.insertRow(rightModel.getRowCount(), new Object[] { multi });
-						break;
-				}
-				firstLoop = false;
-			}
-			decoder.close();
+
 		} else if(com.contentEquals("Remove")) {
 			try {
 				int index = rightTable.getSelectedRow();
@@ -394,8 +405,9 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 				errorLabel.setVisible(false);
 				
 			} catch(ArrayIndexOutOfBoundsException e) {
-				errorLabel.setText("Error: Wrong operation");
-				errorLabel.setVisible(true);
+                            e.printStackTrace();
+                            errorLabel.setText("Error: Wrong operation");
+                            errorLabel.setVisible(true);
 			}
 			
 		} else if(com.contentEquals("Delete File")) {
@@ -409,12 +421,12 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 				errorLabel.setVisible(false);
 				
 			} catch(ArrayIndexOutOfBoundsException e) {
+                                e.printStackTrace();
 				errorLabel.setText("Error: Select a file to delete");
 				errorLabel.setVisible(true);
 			}
 			
 		} else if(com.contentEquals("Multiplication")) {
-			
 			String left = JOptionPane.showInputDialog("Left Input: ");
 			String right = JOptionPane.showInputDialog("Right Input: ");
 			String exp = JOptionPane.showInputDialog("Expected Result: ");
@@ -448,10 +460,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			rightModel.insertRow(rightModel.getRowCount(), new Object[] { divideString });
 			dataList.add(div);
 			
-			
 		} else if(com.contentEquals("Create File")) {
-			// By Emily Griscom
-			// prompt for folder
 			JFileChooser chooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
 			chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 			int tmp = chooser.showOpenDialog(null);																		// Invoke to show the save dialog
@@ -470,16 +479,16 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 			    	if(ButtonActions.isBlank(fileName)) {
 			    		errorLabel.setText("Error: Blank filename");
 			            errorLabel.setVisible(true);
-			         /*   
+			        /*   
 			        } else if(ButtonActions.exists(folderName + "//" + fileName + ".xml")) {   
 			            errorLabel.setText("Error: File already exists");
 			            errorLabel.setVisible(true);
-			        	*/
+			        */
 			        } else { // no errors, create file
-			        	try {
-			        		File newFile = new File(folderName + "//" + fileName + ".xml");
-			                newFile.createNewFile();
-			                errorLabel.setVisible(false);
+                                    try {
+                                        File newFile = new File(folderName + "//" + fileName + ".xml");
+                                        newFile.createNewFile();
+                                        errorLabel.setVisible(false);
 			            } catch (IOException ex) {
 			                errorLabel.setText("Error: Invalid characters in filename");
 			                errorLabel.setVisible(true);
@@ -509,24 +518,29 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 	        }
 		        
 		} else if (com.contentEquals("Save")) {																		// If user presses saves file
-			int index = leftTable.getSelectedRow();
-			String file = (String) leftModel.getValueAt(index, 0); 
-			System.out.println(file);
-			//File file = new File("divide.xml");
-			//String path = file.getAbsolutePath();
-			FileOutputStream fos = null;
 			try {
-				fos = new FileOutputStream(file);
-			} catch (FileNotFoundException e2) {
-				e2.printStackTrace();
+                            int index = leftTable.getSelectedRow();
+                            String file = (String) leftModel.getValueAt(index, 0); 
+                            System.out.println(file);
+                            //File file = new File("divide.xml");
+                            //String path = file.getAbsolutePath();
+                            FileOutputStream fos = new FileOutputStream(file);
+                            BufferedOutputStream bos = new BufferedOutputStream(fos);
+                            XMLEncoder xmlEncoder = new XMLEncoder(bos);
+                            for(int i=0; i<dataList.size(); i++) {
+                                xmlEncoder.writeObject(dataList.get(i));
+                            }
+                            xmlEncoder.close();
+                            errorLabel.setVisible(false);
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+                                errorLabel.setText("Error: File not found");
+			        errorLabel.setVisible(true);
+			} catch(ArrayIndexOutOfBoundsException e) {
+                                e.printStackTrace();
+				errorLabel.setText("Error: Select a file to save");
+			        errorLabel.setVisible(true);
 			}
-			BufferedOutputStream bos = new BufferedOutputStream(fos);
-			XMLEncoder xmlEncoder = new XMLEncoder(bos);
-			for(int i=0; i<dataList.size(); i++) {
-			xmlEncoder.writeObject(dataList.get(i));
-			}
-			xmlEncoder.close();
-			
 		}
 	}
 }
