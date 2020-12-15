@@ -1,7 +1,7 @@
-package flexible_regression_gui;
+package src.test.java.flexible_regression_gui;
 
-import flexible_regression_gui.TestSequence;
-import flexible_regression_gui.Testable;
+import src.main.java.flexible_regression_gui.TestSequence;
+import src.main.java.flexible_regression_gui.Testable;
 
 /**
  * A sample view for this project

@@ -1,4 +1,4 @@
-package flexible_regression_gui;
+package src.main.java.flexible_regression_gui;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

@@ -1,4 +1,6 @@
-package flexible_regression_gui;
+package src.test.java.flexible_regression_gui;
+
+import src.main.java.flexible_regression_gui.MultBean;
 
 /**
  * A tester class to make sure the file structure for the maven project is set up properly

@@ -1,11 +1,8 @@
-package flexible_regression_gui;
+package src.test.java.flexible_regression_gui;
 
-import java.lang.reflect.*;
-import java.util.List;
-
-import flexible_regression_gui.Testable;
-
+import java.lang.reflect.Method;
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * A testing class that uses the TestStep interface to work with the TestSequence controller
@@ -15,7 +12,7 @@ import java.util.LinkedList;
  * 
  * @author Scott Straguzzi
  */
-public class MultTestStep implements Testable {
+public class MultTestStep implements src.main.java.flexible_regression_gui.Testable {
 	private int left;
 	private int right;
 	private int result;

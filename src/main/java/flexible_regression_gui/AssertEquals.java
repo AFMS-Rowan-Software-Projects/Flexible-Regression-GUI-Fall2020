@@ -1,4 +1,4 @@
-package flexible_regression_gui;
+package src.main.java.flexible_regression_gui;
 
 public class AssertEquals {
 	int result = 0; // Defaults to 0 before being instantiated 
