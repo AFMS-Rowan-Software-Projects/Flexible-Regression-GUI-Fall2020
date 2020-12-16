@@ -5,7 +5,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.*;
@@ -17,30 +16,17 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Stack;
-
 import javax.swing.filechooser.*;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.text.JTextComponent;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-import org.xml.sax.SAXException;
 
 /**
  * Implements a GUI
  * 
  * @author  Ryan Bothmann
- * @version 12/15/2020
+ * @edited  by Emily Griscom
+ * @version 12/16/2020
  */
 public class FlexRegBuilder extends JFrame implements ActionListener {
 	  
@@ -88,7 +74,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		testHeader.setVerticalAlignment(JLabel.TOP);
 		testHeader.setVerticalTextPosition(JLabel.TOP);
 		testHeader.setHorizontalTextPosition(JLabel.CENTER);
-		testHeader.setFont(new Font("MV Boli", Font.BOLD, 24));
+		testHeader.setFont(new Font("Helvetica", Font.BOLD, 24));
 		testHeader.setForeground(Color.ORANGE);
 
 		JLabel fileHeader = new JLabel("Files"); 											// File header label
@@ -96,7 +82,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
 		fileHeader.setVerticalAlignment(JLabel.TOP);
 		fileHeader.setVerticalTextPosition(JLabel.TOP);
 		fileHeader.setHorizontalTextPosition(JLabel.CENTER);
-		fileHeader.setFont(new Font("MV Boli", Font.BOLD, 40));
+		fileHeader.setFont(new Font("Helvetica", Font.BOLD, 40));
 		fileHeader.setForeground(Color.ORANGE);
 
 		// = = = = = = = = Buttons = = = = = = = =
@@ -363,7 +349,7 @@ public class FlexRegBuilder extends JFrame implements ActionListener {
                             boolean firstLoop = true;
                             while(obj != null || firstLoop) {
                                 obj = decoder.readObject();
-                            
+				    
                                 String tempString = obj.getClass().toString().substring(44); 
                                 // substring(44) used due to the file path currently containing 
                                 // "class src.main.java.flexible_regression_gui." before the class name
